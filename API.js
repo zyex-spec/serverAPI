@@ -11,6 +11,7 @@ export class API {
         this.app.listen(process.env.PORT,()=>console.log(`Servidor encendido en ${process.env.PORT}`))
     }
     enrutarPeticiones(){
+        this.app.use(express.json())
         this.app.use('/',rutas)
     }
     conectarConBD(){}
