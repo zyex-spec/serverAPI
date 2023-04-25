@@ -15,6 +15,6 @@ rutas.put('/editandohabitacion/:idhabitacion',controladorHabitacion.editandoHabi
   //reservas
 rutas.get('/buscarreservas',controladorReserva.buscandoReservas)
 rutas.get('/buscarreserva/:idreserva',controladorReserva.buscandoReserva)
-rutas.post('/registrarreserva',controladorReserva.registrandoReseva)
+rutas.post('/registrarreserva',controladorReserva.registrandoReserva)
 rutas.put('/editandoreserva/:idreserva',controladorReserva.editandoReserva)
 rutas.put('/eliminarreserva/:idreserva',controladorReserva.eliminandoReserva)

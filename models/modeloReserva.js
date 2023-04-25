@@ -41,4 +41,4 @@ const Reserva = new Schema({
     }
 })
 
-export const modeloHabitacion=mongoose.model('reserva',Reserva)
+export const modeloReserva=mongoose.model('reserva',Reserva)

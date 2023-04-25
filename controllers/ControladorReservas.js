@@ -1,9 +1,12 @@
+import { ServicioReserva } from "../services/ServicioReserva.js"
+
 export class ControladorReservas{
     constructor(){}
-    registrandoReseva(peticion,respuesta){
+    async registrandoReserva(peticion,respuesta){
+        let objetoServicioReserva = new ServicioReserva()
         try{
             let datosReserva = peticion.body
-            console.log(datosReserva)
+            await objetoServicioReserva.registrar(datosReserva)
             respuesta.status(200).json({
                 "mensaje":"exito agregando datos"
             })
@@ -14,12 +17,14 @@ export class ControladorReservas{
             })
         }
     }
-    buscandoReserva(peticion,respuesta){
+    async buscandoReserva(peticion,respuesta){
+        let objetoServicioReserva = new ServicioReserva()
         try{
             let idReserva = peticion.params.idreserva
             console.log(idReserva)
             respuesta.status(200).json({
-                "mensaje":"exito buscando reserva"
+                "mensaje":"exito buscando reserva",
+                "reserva": await objetoServicioReserva.buscarPorId(idReserva)
             })
         }
         catch(error){
@@ -28,10 +33,12 @@ export class ControladorReservas{
             })
         }
     }
-    buscandoReservas(peticion,respuesta){
+    async buscandoReservas(peticion,respuesta){
+        let objetoServicioReserva = new ServicioReserva()
         try{
             respuesta.status(200).json({
-                "mensaje":"exito buscando reservas"
+                "mensaje":"exito buscando reservas",
+                "habitaciones": await objetoServicioReserva.buscarTodas()
             })
         }
         catch(error){
@@ -40,12 +47,12 @@ export class ControladorReservas{
             })
         }
     }
-    editandoReserva(peticion,respuesta){
+    async editandoReserva(peticion,respuesta){
         let idReserva = peticion.params.idreserva
         let datosReserva = peticion.body
-        console.log(idReserva)
-        console.log(datosReserva)
+        let objetoServicioReserva = new ServicioReserva()
         try{
+            await objetoServicioReserva.editar(idReserva,datosReserva)
             respuesta.status(200).json({
                 "mensaje":"exito editando reserva"
             })
@@ -57,10 +64,11 @@ export class ControladorReservas{
         }
     }
 
-    eliminandoReserva(peticion,respuesta){
+    async eliminandoReserva(peticion,respuesta){
+        let objetoServicioReserva = new ServicioReserva()
         try{
             let idReserva = peticion.params.idreserva
-            console.log(idReserva)
+            await objetoServicioReserva.eliminar(idReserva)
             respuesta.status(200).json({
                 "mensaje":"exito eliminando reserva"
             })
