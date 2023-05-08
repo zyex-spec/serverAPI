@@ -1,19 +1,28 @@
 import { ServicioHabitacion } from "../services/ServicioHabitacion.js"
+import { validarDatos } from "../helpers/validarDatos.js"
 
 export class ControladorHabitaciones{
     constructor(){}
     async registrandoHabitacion(peticion,respuesta){
+        let datosHabitacion = peticion.body
         let objetoServicioHabitacion = new ServicioHabitacion()
         try{
-            let datosHabitacion = peticion.body
-            await objetoServicioHabitacion.registrar(datosHabitacion)
-            respuesta.status(200).json({
-                "mensaje":"exito agregando datos"
-            })
+            if(validarDatos(datosHabitacion)!=true){
+                let errorDatos = validarDatos(datosHabitacion)
+                respuesta.status(400).json({
+                    "Mensaje":"Fallamos en la operacion, "+errorDatos
+                })
+            }
+            else{
+                await objetoServicioHabitacion.registrar(datosHabitacion)
+                respuesta.status(200).json({
+                    "Mensaje":"Exito agregando datos"
+                })
+            } 
         }
         catch(error){
             respuesta.status(400).json({
-                "mensaje":"fallamos en la operacion "+error
+                "Mensaje":"Fallamos en la operacion "+error
             })
         }
     }
@@ -22,13 +31,13 @@ export class ControladorHabitaciones{
         try{
             let idHabitacion = peticion.params.idhabitacion
             respuesta.status(200).json({
-                "mensaje":"exito buscando habitacion",
-                "habitacion": await objetoServicioHabitacion.buscarPorId(idHabitacion)
+                "Mensaje":"Exito buscando habitacion",
+                "Habitacion": await objetoServicioHabitacion.buscarPorId(idHabitacion)
             })
         }
         catch(error){
             respuesta.status(400).json({
-                "mensaje":"fallamos en la operacion "+error
+                "Mensaje":"Fallamos en la operacion "+error
             })
         }
     }
@@ -36,13 +45,13 @@ export class ControladorHabitaciones{
         let objetoServicioHabitacion = new ServicioHabitacion()
         try{
             respuesta.status(200).json({
-                "mensaje":"exito buscando habitaciones",
-                "habitaciones": await objetoServicioHabitacion.buscarTodas()
+                "Mensaje":"Exito buscando habitaciones",
+                "Habitaciones": await objetoServicioHabitacion.buscarTodas()
             })
         }
         catch(error){
             respuesta.status(400).json({
-                "mensaje":"fallamos en la operacion "+error
+                "Mensaje":"Fallamos en la operacion "+error
             })
         }
     }
@@ -53,12 +62,12 @@ export class ControladorHabitaciones{
         try{
             await objetoServicioHabitacion.editar(idHabitacion,datosHabitacion)
             respuesta.status(200).json({
-                "mensaje":"exito editando habitacion"
+                "Mensaje":"Exito editando habitacion"
             })
         }
         catch(error){
             respuesta.status(400).json({
-                "mensaje":"fallamos en la operacion "+error
+                "Mensaje":"Fallamos en la operacion "+error
             })
         }
     }

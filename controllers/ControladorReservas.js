@@ -1,19 +1,41 @@
 import { ServicioReserva } from "../services/ServicioReserva.js"
+import { ServicioHabitacion } from "../services/ServicioHabitacion.js"
+import { validarHabitacion } from "../helpers/validarHabitacion.js"
 
 export class ControladorReservas{
     constructor(){}
     async registrandoReserva(peticion,respuesta){
+        let datosReserva = peticion.body
         let objetoServicioReserva = new ServicioReserva()
+        let objetoServicioHabitacion = new ServicioHabitacion()
+        let fecha1 = new Date(datosReserva.fechaIni)
+        let fecha2 = new Date(datosReserva.fechaFin)
         try{
-            let datosReserva = peticion.body
-            await objetoServicioReserva.registrar(datosReserva)
-            respuesta.status(200).json({
-                "mensaje":"exito agregando datos"
-            })
+            if(await validarHabitacion(datosReserva) == false){
+                respuesta.status(400).json({
+                    "Mensaje":"No se encontro la habitacion: "+datosReserva.idhabitacion
+                })
+            }
+            else if(fecha1>fecha2){
+                respuesta.status(400).json({
+                    "Mensaje":"La fecha inicial debe ser anterior a la fecha final"
+                })
+            }
+            else{
+                let habitacion = await objetoServicioHabitacion.buscarPorId(datosReserva.idhabitacion)
+                let vlrNoche = habitacion.precio
+                let diferenciaEnDias = ((((fecha2 - fecha1)/1000)/60)/60)/24;
+                let vlrReserva = diferenciaEnDias*vlrNoche
+                datosReserva.costoreserva = vlrReserva
+                await objetoServicioReserva.registrar(datosReserva)
+                respuesta.status(200).json({
+                    "Mensaje":"Exito agregando datos"
+                })
+            }   
         }
         catch(error){
             respuesta.status(400).json({
-                "mensaje":"fallamos en la operacion "+error
+                "Mensaje":"Fallamos en la operacion "+error
             })
         }
     }
@@ -21,15 +43,14 @@ export class ControladorReservas{
         let objetoServicioReserva = new ServicioReserva()
         try{
             let idReserva = peticion.params.idreserva
-            console.log(idReserva)
             respuesta.status(200).json({
-                "mensaje":"exito buscando reserva",
-                "reserva": await objetoServicioReserva.buscarPorId(idReserva)
+                "Mensaje":"Exito buscando reserva",
+                "Reserva": await objetoServicioReserva.buscarPorId(idReserva)
             })
         }
         catch(error){
             respuesta.status(400).json({
-                "mensaje":"fallamos en la operacion "+error
+                "Mensaje":"Fallamos en la operacion "+error
             })
         }
     }
@@ -37,13 +58,13 @@ export class ControladorReservas{
         let objetoServicioReserva = new ServicioReserva()
         try{
             respuesta.status(200).json({
-                "mensaje":"exito buscando reservas",
-                "habitaciones": await objetoServicioReserva.buscarTodas()
+                "Mensaje":"Exito buscando reservas",
+                "Reservas": await objetoServicioReserva.buscarTodas()
             })
         }
         catch(error){
             respuesta.status(400).json({
-                "mensaje":"fallamos en la operacion "+error
+                "Mensaje":"Fallamos en la operacion "+error
             })
         }
     }
@@ -54,12 +75,12 @@ export class ControladorReservas{
         try{
             await objetoServicioReserva.editar(idReserva,datosReserva)
             respuesta.status(200).json({
-                "mensaje":"exito editando reserva"
+                "Mensaje":"Exito editando reserva"
             })
         }
         catch(error){
             respuesta.status(400).json({
-                "mensaje":"fallamos en la operacion "+error
+                "Mensaje":"Fallamos en la operacion "+error
             })
         }
     }
@@ -70,12 +91,12 @@ export class ControladorReservas{
             let idReserva = peticion.params.idreserva
             await objetoServicioReserva.eliminar(idReserva)
             respuesta.status(200).json({
-                "mensaje":"exito eliminando reserva"
+                "Mensaje":"Exito eliminando reserva"
             })
         }
         catch(error){
             respuesta.status(400).json({
-                "mensaje":"fallamos en la operacion "+error
+                "Mensaje":"Fallamos en la operacion "+error
             })
         }
     }

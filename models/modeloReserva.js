@@ -38,6 +38,10 @@ const Reserva = new Schema({
     numerodeadultos:{
         type: Number,
         required: true
+    },
+    costoreserva:{
+        type: Number,
+        required: false
     }
 })
 
