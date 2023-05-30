@@ -10,7 +10,10 @@ export class ControladorReservas{
         let objetoServicioHabitacion = new ServicioHabitacion()
         let fecha1 = new Date(datosReserva.fechaIni)
         let fecha2 = new Date(datosReserva.fechaFin)
+        let totalPersonasReserva = datosReserva.numerodeniños + datosReserva.numerodeadultos
         try{
+            let habitacion = await objetoServicioHabitacion.buscarPorId(datosReserva.idhabitacion)
+            let totalPersonas = habitacion.numeropersonas
             if(await validarHabitacion(datosReserva) == false){
                 respuesta.status(400).json({
                     "Mensaje":"No se encontro la habitacion: "+datosReserva.idhabitacion
@@ -19,6 +22,11 @@ export class ControladorReservas{
             else if(fecha1>fecha2){
                 respuesta.status(400).json({
                     "Mensaje":"La fecha inicial debe ser anterior a la fecha final"
+                })
+            }
+            else if(totalPersonasReserva>totalPersonas){
+                respuesta.status(400).json({
+                    "Mensaje":"Se supera la cantidad maxima de personas para esta habitacions"
                 })
             }
             else{

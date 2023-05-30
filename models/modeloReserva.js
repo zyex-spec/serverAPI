@@ -23,10 +23,6 @@ const Reserva = new Schema({
         type: Date,
         required: true
     },
-    numeropersonas:{
-        type: Number,
-        required: true
-    },
     idhabitacion:{
         type: String,
         required: true
